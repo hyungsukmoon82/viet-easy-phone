@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gọi Dễ Dàng">
+<title>Gọi Dễ Dàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Be+Vietnam+Pro:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+
+:root{
+  --bg:        #FDF6EC;
+  --bg2:       #F5ECD8;
+  --card:      #FFFAF3;
+  --terra:     #C4622D;
+  --terra-d:   #A04E22;
+  --terra-l:   #F2D4C2;
+  --mango:     #E8A020;
+  --mango-l:   #FDF0D0;
+  --green:     #3A7D44;
+  --green-d:   #2C5F34;
+  --green-l:   #D4EDDA;
+  --teal:      #1A7A6E;
+  --teal-l:    #C8EDED;
+  --red:       #C0392B;
+  --text:      #2D1F0E;
+  --text2:     #6B4E2A;
+  --text3:     #A8875A;
+  --border:    #E8D5B8;
+  --shadow:    0 4px 20px rgba(100,60,20,.10);
+  --shadow-lg: 0 8px 40px rgba(100,60,20,.18);
+  --r-xl:      24px;
+  --r-lg:      18px;
+  --r-md:      12px;
+  --r-full:    999px;
+  --safe-top:  env(safe-area-inset-top, 44px);
+  --safe-bot:  env(safe-area-inset-bottom, 34px);
+}
+
+html,body{
+  min-height:100%;
+  background:var(--bg);
+  font-family:'Be Vietnam Pro',sans-serif;
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* ── TROPICAL BACKGROUND ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 40% at 90% 10%, rgba(232,160,32,.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 90%, rgba(58,125,68,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 30% at 50% 0%,  rgba(196,98,45,.06) 0%, transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+/* decorative palm leaf top right */
+body::after{
+  content:'🌿';
+  position:fixed;top:-10px;right:-10px;
+  font-size:120px;opacity:.06;
+  pointer-events:none;z-index:0;
+  transform:rotate(-20deg);
+}
+
+/* ── STATUS BAR (iOS) ── */
+.ios-status{
+  background:var(--terra);
+  padding:calc(var(--safe-top) + 0px) 20px 0;
+  position:sticky;top:0;z-index:60;
+  min-height:calc(var(--safe-top) + 0px);
+}
+
+/* ── HEADER ── */
+.header{
+  background:var(--terra);
+  padding:14px 20px 18px;
+  position:sticky;top:0;z-index:59;
+  box-shadow:0 4px 24px rgba(196,98,45,.3);
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between;}
+.header-brand{display:flex;align-items:center;gap:10px;}
+.header-icon{font-size:28px;}
+.header-title{
+  font-family:'Lora',serif;
+  font-size:22px;font-weight:700;
+  color:#FFF8EC;letter-spacing:.3px;
+}
+.header-sub{font-size:11px;color:rgba(255,248,236,.6);margin-top:1px;font-weight:500;}
+.header-time{text-align:right;}
+.htime{font-family:'Lora',serif;font-size:24px;font-weight:700;color:#FFF8EC;}
+.hdate{font-size:11px;color:rgba(255,248,236,.6);margin-top:2px;}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;
+  background:rgba(253,246,236,.97);
+  border-top:1.5px solid var(--border);
+  display:flex;
+  padding-bottom:var(--safe-bot);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  box-shadow:0 -4px 20px rgba(100,60,20,.10);
+}
+.nb{
+  flex:1;padding:10px 4px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;border:none;background:transparent;
+  font-family:inherit;transition:all .15s;
+}
+.nb-icon{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;transition:all .15s;
+}
+.nb-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.2px;}
+.nb.active .nb-icon{background:var(--terra-l);transform:translateY(-2px);}
+.nb.active .nb-label{color:var(--terra);}
+
+/* ── SCREENS ── */
+.screen{display:none;padding:0 0 120px;position:relative;z-index:1;}
+.screen.active{display:block;animation:fadeup .25s ease;}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGE HEADER ── */
+.ph{padding:18px 16px 10px;}
+.ph h2{font-family:'Lora',serif;font-size:22px;font-weight:700;color:var(--text);}
+.ph p{font-size:12px;color:var(--text3);margin-top:3px;font-weight:500;}
+
+/* ── SECTION LABEL ── */
+.slabel{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px 10px;
+}
+.slabel span{font-size:12px;font-weight:800;color:var(--text3);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+/* ── CONTACT GRID ── */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 12px;}
+
+.ccard{
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:var(--r-xl);
+  padding:20px 12px 16px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+  cursor:pointer;
+  transition:transform .14s,box-shadow .14s;
+}
+.ccard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent,var(--terra));
+  border-radius:var(--r-xl) var(--r-xl) 0 0;
+}
+/* tropical leaf accent */
+.ccard::after{
+  content:'🌿';position:absolute;bottom:-8px;right:-6px;
+  font-size:40px;opacity:.06;pointer-events:none;
+  transform:rotate(20deg);
+}
+.ccard:active{transform:scale(.96);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.ccard.is-fav{border-color:rgba(196,98,45,.35);}
+
+.fav-star{position:absolute;top:10px;right:10px;font-size:14px;}
+.edit-btn-card{
+  position:absolute;top:9px;left:10px;
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(196,98,45,.12);border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;cursor:pointer;
+  transition:all .12s;
+}
+.edit-btn-card:active{background:rgba(196,98,45,.25);}
+
+.cav{
+  width:68px;height:68px;border-radius:50%;
+  margin:0 auto 10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;position:relative;
+  border:2px solid var(--border);
+}
+.cav-ring{
+  position:absolute;inset:-4px;border-radius:50%;
+  border:1.5px solid var(--accent,var(--terra));opacity:.2;
+}
+.cname{font-family:'Lora',serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.crel{font-size:11px;color:var(--text3);font-weight:600;margin-bottom:3px;}
+.cphone{font-size:10px;color:var(--text3);margin-bottom:12px;}
+
+.cbtns{display:flex;gap:7px;}
+.cbtn{
+  flex:1;border:none;border-radius:var(--r-full);
+  padding:11px 4px;font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;font-family:inherit;transition:filter .12s;
+}
+.cbtn:active{filter:brightness(.85);}
+.cbtn-call{background:var(--green);color:#fff;box-shadow:0 3px 12px rgba(58,125,68,.3);}
+.cbtn-ft{background:var(--teal);color:#fff;box-shadow:0 3px 12px rgba(26,122,110,.28);}
+
+/* ── DIALPAD ── */
+.dp-wrap{padding:14px;}
+.dp-display{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-xl);padding:18px 20px;
+  margin-bottom:12px;min-height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:var(--shadow);
+}
+.dp-num{
+  font-family:'Lora',serif;font-size:36px;font-weight:700;
+  color:var(--terra);letter-spacing:2px;word-break:break-all;flex:1;
+}
+.dp-num.ph{font-size:15px;color:var(--text3);font-family:'Noto Sans KR';font-weight:400;}
+.dp-del{
+  width:44px;height:44px;border-radius:50%;
+  border:1.5px solid var(--border);background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;flex-shrink:0;margin-left:12px;
+  transition:all .12s;
+}
+.dp-del:active{background:var(--terra-l);}
+
+.pad-card{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-xl);padding:14px;box-shadow:var(--shadow);
+}
+.pad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px;}
+.pkey{
+  background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 8px;text-align:center;
+  cursor:pointer;transition:all .1s;font-family:inherit;
+}
+.pkey:active{background:var(--terra-l);border-color:var(--terra);transform:scale(.94);}
+.pd{font-family:'Lora',serif;font-size:28px;font-weight:700;color:var(--text);display:block;line-height:1;}
+.pl{font-size:9px;color:var(--text3);display:block;margin-top:3px;font-weight:700;letter-spacing:1.5px;}
+.pad-bot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.pcall{
+  background:linear-gradient(135deg,var(--green),var(--green-d));
+  border:none;border-radius:var(--r-lg);padding:18px 8px;
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  cursor:pointer;box-shadow:0 4px 18px rgba(58,125,68,.35);transition:all .12s;
+}
+.pcall:active{filter:brightness(.88);transform:scale(.95);}
+
+/* ── RECENTS ── */
+.rlist{padding:0 12px;display:flex;flex-direction:column;gap:10px;}
+.ritem{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-lg);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--shadow);cursor:pointer;transition:all .12s;
+}
+.ritem:active{transform:scale(.98);}
+.rav{
+  width:48px;height:48px;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;border:1.5px solid var(--border);
+}
+.rinfo{flex:1;}
+.rname{font-size:16px;font-weight:900;color:var(--text);}
+.rmeta{font-size:12px;color:var(--text3);margin-top:3px;font-weight:600;}
+.rbtn{
+  width:40px;height:40px;border-radius:13px;
+  border:1.5px solid var(--border);background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;transition:all .12s;
+}
+.rbtn:active{background:var(--green-l);}
+
+/* ── FACETIME ── */
+.ft-hero{
+  background:linear-gradient(135deg,var(--teal) 0%,#0D5A50 100%);
+  border-radius:var(--r-xl);padding:20px;margin:14px 12px 12px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:0 6px 28px rgba(26,122,110,.3);
+}
+.ft-hero-icon{font-size:36px;}
+.ft-hero-title{font-family:'Lora',serif;font-size:19px;color:#fff;font-weight:700;}
+.ft-hero-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:3px;}
+.ft-list{padding:0 12px;display:flex;flex-direction:column;gap:10px;}
+.ftitem{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-lg);padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:var(--shadow);cursor:pointer;transition:all .12s;
+}
+.ftitem:active{transform:scale(.98);}
+.ftav{
+  width:50px;height:50px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;border:2px solid var(--border);flex-shrink:0;
+}
+.ftinfo{flex:1;}
+.ftname{font-size:16px;font-weight:900;color:var(--text);}
+.ftmeta{font-size:12px;color:var(--text3);margin-top:3px;}
+.ftbtn{
+  background:var(--teal);color:#fff;
+  border:none;border-radius:var(--r-full);
+  padding:10px 14px;font-size:13px;font-weight:800;
+  font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+  box-shadow:0 3px 14px rgba(26,122,110,.3);transition:all .12s;
+}
+.ftbtn:active{filter:brightness(.88);transform:scale(.95);}
+
+/* ── ADD FORM ── */
+.aform{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-xl);padding:22px 18px;
+  margin:0 12px;box-shadow:var(--shadow);
+}
+.flbl{font-size:11px;font-weight:800;color:var(--terra);letter-spacing:1.2px;text-transform:uppercase;display:block;margin-bottom:8px;}
+.fgrp{margin-bottom:16px;}
+.finp{
+  width:100%;background:var(--bg2);
+  border:1.5px solid var(--border);border-radius:var(--r-md);
+  padding:14px 16px;font-size:17px;
+  font-family:inherit;font-weight:700;color:var(--text);
+  outline:none;transition:border-color .2s;
+  -webkit-appearance:none;
+}
+.finp:focus{border-color:var(--terra);background:var(--card);}
+.finp::placeholder{color:var(--text3);font-size:14px;font-weight:400;}
+
+.epick{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:8px;}
+.ep{
+  background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:10px;padding:7px;font-size:20px;
+  text-align:center;cursor:pointer;transition:all .12s;
+}
+.ep.on{border-color:var(--terra);background:var(--terra-l);}
+
+.cpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.cp{
+  width:36px;height:36px;border-radius:50%;
+  border:2.5px solid transparent;cursor:pointer;transition:all .12s;
+}
+.cp.on{border-color:var(--text);transform:scale(1.18);}
+
+.fpick{display:flex;gap:10px;margin-top:8px;}
+.fp{
+  flex:1;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:var(--r-md);padding:14px 8px;
+  text-align:center;cursor:pointer;font-family:inherit;transition:all .12s;
+}
+.fp.on{border-color:var(--terra);background:var(--terra-l);}
+.fpicon{font-size:22px;display:block;margin-bottom:4px;}
+.fplbl{font-size:12px;font-weight:700;color:var(--text2);}
+
+.savebtn{
+  width:100%;margin-top:10px;
+  background:linear-gradient(135deg,var(--terra),var(--terra-d));
+  border:none;border-radius:var(--r-lg);
+  padding:18px;font-size:17px;font-weight:900;
+  color:#FFF8EC;font-family:inherit;cursor:pointer;
+  box-shadow:0 5px 20px rgba(196,98,45,.35);
+  transition:all .15s;letter-spacing:-.3px;
+  -webkit-appearance:none;
+}
+.savebtn:active{filter:brightness(.88);transform:scale(.97);}
+
+/* ── EDIT MODAL ── */
+.modal-bg{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(45,31,14,.55);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  align-items:flex-end;
+}
+.modal-bg.show{display:flex;animation:fadein .2s ease;}
+.modal{
+  background:var(--bg);
+  border-radius:28px 28px 0 0;
+  padding:22px 18px calc(var(--safe-bot) + 16px);
+  width:100%;
+  animation:slideup .3s cubic-bezier(.25,.8,.25,1);
+  max-height:90vh;overflow-y:auto;
+}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{
+  width:36px;height:4px;border-radius:2px;
+  background:var(--border);margin:0 auto 18px;
+}
+.modal-title{
+  font-family:'Lora',serif;font-size:20px;font-weight:700;
+  color:var(--text);margin-bottom:18px;text-align:center;
+}
+.modal-btns{display:flex;gap:10px;margin-top:14px;}
+.mbtn-cancel{
+  flex:1;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:var(--r-md);padding:16px;
+  font-size:16px;font-weight:700;color:var(--text2);
+  font-family:inherit;cursor:pointer;transition:all .12s;
+}
+.mbtn-save{
+  flex:1;background:linear-gradient(135deg,var(--terra),var(--terra-d));
+  border:none;border-radius:var(--r-md);padding:16px;
+  font-size:16px;font-weight:800;color:#FFF8EC;
+  font-family:inherit;cursor:pointer;
+  box-shadow:0 4px 16px rgba(196,98,45,.3);transition:all .12s;
+}
+.mbtn-delete{
+  background:rgba(192,57,43,.1);border:1.5px solid rgba(192,57,43,.25);
+  border-radius:var(--r-md);padding:16px 20px;
+  font-size:16px;font-weight:800;color:var(--red);
+  font-family:inherit;cursor:pointer;transition:all .12s;
+}
+.mbtn-cancel:active,.mbtn-save:active,.mbtn-delete:active{transform:scale(.96);}
+
+/* ── CALLING OVERLAY ── */
+.call-ov{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:linear-gradient(180deg,#1A2E0D 0%,#0D1A07 100%);
+  flex-direction:column;align-items:center;
+  padding:calc(var(--safe-top) + 60px) 28px calc(var(--safe-bot) + 40px);
+}
+.call-ov.show{display:flex;animation:fadein .3s ease;}
+@keyframes fadein{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:scale(1)}}
+
+.cp-wrap{position:relative;width:150px;height:150px;margin-bottom:28px;}
+.cp-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(58,125,68,.12);
+  animation:pring 2.2s ease-out infinite;
+}
+.cp-ring:nth-child(2){animation-delay:.75s;}
+.cp-ring:nth-child(3){animation-delay:1.5s;}
+@keyframes pring{0%{transform:scale(.8);opacity:.8}100%{transform:scale(1.65);opacity:0}}
+.cp-face{
+  position:absolute;inset:14px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:52px;border:2px solid rgba(255,255,255,.12);
+}
+.call-name{font-family:'Lora',serif;font-size:32px;font-weight:700;color:#FFF8EC;margin-bottom:6px;}
+.call-status{font-size:15px;color:rgba(255,248,236,.5);margin-bottom:6px;}
+.call-timer{font-family:'Lora',serif;font-size:22px;font-weight:700;color:#7EC87E;letter-spacing:3px;min-height:30px;}
+.call-ctrl{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;}
+.ctrl{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;}
+.ctrlc{
+  width:68px;height:68px;border-radius:50%;border:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;cursor:pointer;transition:all .12s;
+}
+.ctrlc:active{transform:scale(.88);}
+.ctrlc.end{background:var(--red);box-shadow:0 4px 20px rgba(192,57,43,.4);}
+.ctrlc.side{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.15);}
+.ctrlc.on{background:rgba(126,200,126,.2);border:1.5px solid #7EC87E!important;}
+.ctrll{font-size:12px;font-weight:700;color:rgba(255,248,236,.45);text-align:center;}
+
+/* ── INCOMING OVERLAY ── */
+.inc-ov{
+  display:none;position:fixed;inset:0;z-index:450;
+  background:linear-gradient(180deg,#1A3020 0%,#0A1A0D 100%);
+  flex-direction:column;align-items:center;
+  padding:calc(var(--safe-top) + 60px) 28px calc(var(--safe-bot) + 50px);
+}
+.inc-ov.show{display:flex;animation:slideup .3s cubic-bezier(.25,.8,.25,1);}
+.inc-badge{
+  background:rgba(58,125,68,.2);border:1.5px solid rgba(58,125,68,.4);
+  border-radius:var(--r-full);padding:9px 24px;
+  font-size:14px;font-weight:800;color:#7EC87E;
+  letter-spacing:.5px;margin-bottom:36px;
+  animation:badge-pulse 1.5s infinite;
+}
+@keyframes badge-pulse{0%,100%{box-shadow:0 0 0 0 rgba(58,125,68,.3)}50%{box-shadow:0 0 0 8px rgba(58,125,68,0)}}
+.inc-avwrap{position:relative;width:130px;height:130px;margin-bottom:22px;}
+.inc-ring{
+  position:absolute;inset:-14px;border-radius:50%;
+  border:2px solid rgba(58,125,68,.2);
+  animation:pring 2s ease-out infinite;
+}
+.inc-ring:nth-child(2){inset:-7px;animation-delay:.7s;border-color:rgba(58,125,68,.3);}
+.inc-face{
+  position:absolute;inset:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:58px;border:2px solid rgba(58,125,68,.25);
+}
+.inc-name{font-family:'Lora',serif;font-size:34px;font-weight:700;color:#FFF8EC;margin-bottom:6px;}
+.inc-sub{font-size:15px;color:rgba(255,248,236,.5);margin-bottom:60px;}
+.inc-btns{display:flex;gap:52px;margin-top:auto;}
+.incbw{text-align:center;}
+.incb{
+  width:82px;height:82px;border-radius:50%;border:none;
+  font-size:34px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;transition:all .12s;
+}
+.incb:active{transform:scale(.88);}
+.incb-ok{background:var(--green);box-shadow:0 6px 24px rgba(58,125,68,.45);}
+.incb-no{background:var(--red);box-shadow:0 6px 24px rgba(192,57,43,.35);}
+.incbl{font-size:14px;font-weight:800;color:rgba(255,248,236,.5);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:calc(var(--safe-bot) + 90px);left:50%;
+  transform:translateX(-50%);
+  background:rgba(45,31,14,.92);color:#FFF8EC;
+  border-radius:var(--r-full);padding:13px 26px;
+  font-size:14px;font-weight:700;
+  opacity:0;transition:opacity .25s;pointer-events:none;
+  z-index:600;white-space:nowrap;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.toast.show{opacity:1;}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:50px 20px;}
+.empty-ico{font-size:50px;margin-bottom:14px;opacity:.35;}
+.empty-txt{font-size:15px;color:var(--text3);font-weight:600;line-height:1.5;}
+.demo-btn{
+  display:block;margin:16px auto 0;
+  background:var(--green-l);color:var(--green);
+  border:1.5px solid rgba(58,125,68,.3);border-radius:var(--r-full);
+  padding:13px 26px;font-size:15px;font-weight:800;
+  font-family:inherit;cursor:pointer;transition:all .12s;
+}
+.demo-btn:active{transform:scale(.96);}
+
+/* ── IOS INSTALL BANNER ── */
+.install-banner{
+  background:linear-gradient(135deg,var(--terra),var(--mango));
+  margin:12px 12px 0;border-radius:var(--r-lg);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 4px 18px rgba(196,98,45,.3);
+}
+.install-banner p{font-size:13px;font-weight:700;color:#FFF8EC;line-height:1.5;flex:1;}
+.install-banner b{display:block;font-size:14px;}
+.install-x{
+  background:rgba(255,255,255,.2);border:none;border-radius:50%;
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;
+}
+</style>
+</head>
+<body>
+
+<!-- iOS STATUS -->
+<div class="ios-status"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-icon">🌺</div>
+      <div>
+        <div class="header-title">Gọi Dễ Dàng</div>
+        <div class="header-sub">Kết nối ngay trong một chạm</div>
+      </div>
+    </div>
+    <div class="header-time">
+      <div class="htime" id="clock">00:00</div>
+      <div class="hdate" id="cdate"></div>
+    </div>
+  </div>
+</div>
+
+<!-- iOS 홈 화면 추가 배너 -->
+<div class="install-banner" id="install-banner">
+  <div>🌿</div>
+  <p><b>📲 Thêm vào màn hình chính!</b>Nhấn nút chia sẻ (□↑) → "Thêm vào màn hình chính"</p>
+  <button class="install-x" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+</div>
+
+<!-- SCREENS -->
+
+<!-- 1. 연락처 -->
+<div class="screen active" id="screen-home">
+  <div class="slabel"><span>⭐ Yêu thích</span></div>
+  <div class="cgrid" id="fav-grid"></div>
+  <div class="slabel"><span>👥 Tất cả danh bạ</span></div>
+  <div class="cgrid" id="all-grid"></div>
+</div>
+
+<!-- 2. 번호판 -->
+<div class="screen" id="screen-dial">
+  <div class="ph"><h2>🔢 Bàn phím số</h2><p>Nhập số để gọi trực tiếp</p></div>
+  <div class="dp-wrap">
+    <div class="dp-display">
+      <div class="dp-num ph" id="dial-disp">Nhập số điện thoại...</div>
+      <button class="dp-del" onclick="dialDel()">⌫</button>
+    </div>
+    <div class="pad-card">
+      <div class="pad-grid" id="pad-grid"></div>
+      <div class="pad-bot">
+        <div></div>
+        <button class="pcall" onclick="callFromDial()">📞</button>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 최근 통화 -->
+<div class="screen" id="screen-recent">
+  <div class="ph"><h2>🕐 Cuộc gọi gần đây</h2><p>Danh sách cuộc gọi của bạn</p></div>
+  <div class="rlist" id="rlist"></div>
+</div>
+
+<!-- 4. FaceTime -->
+<div class="screen" id="screen-ft">
+  <div class="ft-hero">
+    <div class="ft-hero-icon">📹</div>
+    <div>
+      <div class="ft-hero-title">FaceTime</div>
+      <div class="ft-hero-sub">Gọi video thấy mặt nhau qua iPhone</div>
+    </div>
+  </div>
+  <div class="slabel"><span>FaceTime gần đây</span></div>
+  <div class="ft-list" id="ft-list"></div>
+</div>
+
+<!-- 5. 연락처 추가 -->
+<div class="screen" id="screen-add">
+  <div class="ph"><h2>➕ Thêm danh bạ</h2><p>Lưu số điện thoại mới</p></div>
+  <div class="aform">
+    <div class="fgrp">
+      <label class="flbl">Tên</label>
+      <input class="finp" id="inp-name" type="text" placeholder="vd: Con trai, Con gái, Bệnh viện" maxlength="20">
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Số điện thoại</label>
+      <input class="finp" id="inp-phone" type="tel" placeholder="090-0000-0000">
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Quan hệ</label>
+      <input class="finp" id="inp-rel" type="text" placeholder="vd: Con trai, Bệnh viện..." maxlength="20">
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Biểu tượng</label>
+      <div class="epick" id="epick"></div>
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Màu sắc</label>
+      <div class="cpick" id="cpick"></div>
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Loại</label>
+      <div class="fpick">
+        <button class="fp on" id="fp-yes" onclick="setFav(true)">
+          <span class="fpicon">⭐</span><span class="fplbl">Yêu thích</span>
+        </button>
+        <button class="fp" id="fp-no" onclick="setFav(false)">
+          <span class="fpicon">👤</span><span class="fplbl">Thông thường</span>
+        </button>
+      </div>
+    </div>
+    <button class="savebtn" onclick="saveContact()">✅ Lưu danh bạ</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="nb active" id="nav-home" onclick="goScreen('home',this)">
+    <div class="nb-icon">👥</div><div class="nb-label">Danh bạ</div>
+  </button>
+  <button class="nb" id="nav-dial" onclick="goScreen('dial',this)">
+    <div class="nb-icon">🔢</div><div class="nb-label">Bàn phím</div>
+  </button>
+  <button class="nb" id="nav-recent" onclick="goScreen('recent',this)">
+    <div class="nb-icon">🕐</div><div class="nb-label">Gần đây</div>
+  </button>
+  <button class="nb" id="nav-ft" onclick="goScreen('ft',this)">
+    <div class="nb-icon">📹</div><div class="nb-label">FaceTime</div>
+  </button>
+  <button class="nb" id="nav-add" onclick="goScreen('add',this)">
+    <div class="nb-icon">➕</div><div class="nb-label">Thêm mới</div>
+  </button>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✏️ Chỉnh sửa danh bạ</div>
+    <input type="hidden" id="edit-id">
+    <div class="fgrp">
+      <label class="flbl">Tên</label>
+      <input class="finp" id="edit-name" type="text" maxlength="20">
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Số điện thoại</label>
+      <input class="finp" id="edit-phone" type="tel">
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Quan hệ</label>
+      <input class="finp" id="edit-rel" type="text" maxlength="20">
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Biểu tượng</label>
+      <div class="epick" id="edit-epick"></div>
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Màu sắc</label>
+      <div class="cpick" id="edit-cpick"></div>
+    </div>
+    <div class="fgrp">
+      <label class="flbl">Yêu thích</label>
+      <div class="fpick">
+        <button class="fp" id="efp-yes" onclick="setEditFav(true)">
+          <span class="fpicon">⭐</span><span class="fplbl">Yêu thích</span>
+        </button>
+        <button class="fp" id="efp-no" onclick="setEditFav(false)">
+          <span class="fpicon">👤</span><span class="fplbl">Thông thường</span>
+        </button>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn-delete" onclick="deleteContact()">🗑️</button>
+      <button class="mbtn-cancel" onclick="closeEdit()">Hủy</button>
+      <button class="mbtn-save" onclick="saveEdit()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALLING OVERLAY -->
+<div class="call-ov" id="call-ov">
+  <div class="cp-wrap">
+    <div class="cp-ring"></div><div class="cp-ring"></div><div class="cp-ring"></div>
+    <div class="cp-face" id="ca-face"></div>
+  </div>
+  <div class="call-name" id="ca-name">—</div>
+  <div class="call-status" id="ca-status">연결 중...</div>
+  <div class="call-timer" id="ca-timer"></div>
+  <div class="call-ctrl">
+    <div class="ctrl" onclick="toggleSpk()">
+      <button class="ctrlc side" id="btn-spk">🔊</button>
+      <span class="ctrll">Loa ngoài</span>
+    </div>
+    <div class="ctrl" onclick="endCall()">
+      <button class="ctrlc end">📵</button>
+      <span class="ctrll">Kết thúc</span>
+    </div>
+    <div class="ctrl" onclick="toggleMute()">
+      <button class="ctrlc side" id="btn-mute">🎤</button>
+      <span class="ctrll">Tắt tiếng</span>
+    </div>
+  </div>
+</div>
+
+<!-- INCOMING OVERLAY -->
+<div class="inc-ov" id="inc-ov">
+  <div class="inc-badge">📲 Có cuộc gọi đến!</div>
+  <div class="inc-avwrap">
+    <div class="inc-ring"></div><div class="inc-ring"></div>
+    <div class="inc-face" id="inc-face"></div>
+  </div>
+  <div class="inc-name" id="inc-name">—</div>
+  <div class="inc-sub" id="inc-sub">—</div>
+  <div class="inc-btns">
+    <div class="incbw">
+      <button class="incb incb-no" onclick="rejectCall()">📵</button>
+      <div class="incbl">Từ chối</div>
+    </div>
+    <div class="incbw">
+      <button class="incb incb-ok" onclick="acceptCall()">📞</button>
+      <div class="incbl">Trả lời</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────
+const EMOJIS=['👩','👨','👧','👦','👵','👴','🧑','👶','🏥','🚑','🏪','🍜','🌺','❤️','🌿','🎋'];
+const COLORS=['#C4622D','#3A7D44','#1A7A6E','#E8A020','#7B52AB','#D4506A','#2471A3','#D4AC0D','#1E8449','#C0392B'];
+
+let contacts=JSON.parse(localStorage.getItem('ios-c')||'null')||[
+  {id:1,name:'Con trai',phone:'090-1234-5678',rel:'Con trai',emoji:'👨',color:'#3A7D44',fav:true},
+  {id:2,name:'Con gái',phone:'091-9876-5432',rel:'Con gái',emoji:'👩',color:'#D4506A',fav:true},
+  {id:3,name:'Bệnh viện',phone:'028-1234-5678',rel:'Bệnh viện',emoji:'🏥',color:'#1A7A6E',fav:true},
+  {id:4,name:'Chồng',phone:'090-1111-2222',rel:'Chồng',emoji:'👴',color:'#C4622D',fav:true},
+  {id:5,name:'Hàng xóm',phone:'090-5555-6666',rel:'Hàng xóm',emoji:'🏠',color:'#7B52AB',fav:false},
+];
+let recents=JSON.parse(localStorage.getItem('ios-r')||'[]');
+let ftRecents=JSON.parse(localStorage.getItem('ios-ft')||'[]');
+let nextId=Math.max(0,...contacts.map(c=>c.id))+1;
+
+// add form state
+let selE=EMOJIS[0],selC=COLORS[0],isFav=true;
+// edit form state
+let editE=EMOJIS[0],editC=COLORS[0],editFav=true;
+// call state
+let dialStr='',callTimer=null,callSec=0,spkOn=false,muteOn=false;
+
+const save=()=>{
+  localStorage.setItem('ios-c',JSON.stringify(contacts));
+  localStorage.setItem('ios-r',JSON.stringify(recents));
+  localStorage.setItem('ios-ft',JSON.stringify(ftRecents));
+};
+
+// ── CLOCK ──────────────────────────────────────
+const DAYS=['CN','T2','T3','T4','T5','T6','T7'];
+function tick(){
+  const n=new Date();
+  const h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent=`${h}:${m}`;
+  document.getElementById('cdate').textContent=`${n.getDate()}/${n.getMonth()+1} (${DAYS[n.getDay()]})`;
+}
+tick();setInterval(tick,15000);
+
+// ── SCREEN ─────────────────────────────────────
+function goScreen(name,el){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  if(name==='recent')renderRecent();
+  if(name==='ft')renderFT();
+}
+
+// ── RENDER CONTACTS ────────────────────────────
+function hexA(hex,a){return hex+'33';}
+function mkCard(c){
+  return `<div class="ccard ${c.fav?'is-fav':''}" style="--accent:${c.color}">
+    ${c.fav?'<div class="fav-star">⭐</div>':''}
+    <button class="edit-btn-card" onclick="event.stopPropagation();openEdit(${c.id})" title="수정">✏️</button>
+    <div class="cav" style="background:${c.color}22">
+      <div class="cav-ring" style="border-color:${c.color}"></div>
+      <span>${c.emoji}</span>
+    </div>
+    <div class="cname">${c.name}</div>
+    <div class="crel">${c.rel}</div>
+    <div class="cphone">${c.phone}</div>
+    <div class="cbtns">
+      <button class="cbtn cbtn-call" onclick="event.stopPropagation();doCall(${c.id})">📞 Gọi</button>
+      <button class="cbtn cbtn-ft" onclick="event.stopPropagation();doFT(${c.id})">📹</button>
+    </div>
+  </div>`;
+}
+function renderContacts(){
+  const favs=contacts.filter(c=>c.fav);
+  const rest=contacts.filter(c=>!c.fav);
+  document.getElementById('fav-grid').innerHTML=favs.length?favs.map(mkCard).join(''):'<div style="color:var(--text3);padding:10px 4px;font-size:14px">Chưa có yêu thích</div>';
+  document.getElementById('all-grid').innerHTML=rest.length?rest.map(mkCard).join(''):'<div style="color:var(--text3);padding:10px 4px;font-size:14px">Chưa có danh bạ khác</div>';
+}
+
+// ── CALL ───────────────────────────────────────
+function doCall(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  window.location.href=`tel:${c.phone.replace(/-/g,'')}`;
+  openCallOv(c);logRecent(c,'out');
+}
+function openCallOv(c){
+  document.getElementById('ca-face').textContent=c.emoji;
+  document.getElementById('ca-face').style.background=c.color+'22';
+  document.getElementById('ca-name').textContent=c.name;
+  document.getElementById('ca-status').textContent=(c.rel||'')+' · Đang kết nối...';
+  document.getElementById('ca-timer').textContent='';
+  spkOn=false;muteOn=false;callSec=0;updateCtrl();
+  document.getElementById('call-ov').classList.add('show');
+  setTimeout(()=>{
+    if(!document.getElementById('call-ov').classList.contains('show'))return;
+    document.getElementById('ca-status').textContent='Đang gọi';
+    callTimer=setInterval(()=>{
+      callSec++;
+      const mm=String(Math.floor(callSec/60)).padStart(2,'0');
+      const ss=String(callSec%60).padStart(2,'0');
+      document.getElementById('ca-timer').textContent=`${mm}:${ss}`;
+    },1000);
+  },2000);
+}
+function endCall(){clearInterval(callTimer);document.getElementById('call-ov').classList.remove('show');}
+function toggleSpk(){spkOn=!spkOn;updateCtrl();showToast(spkOn?'🔊 Đã bật loa ngoài':'🔇 Đã tắt loa ngoài');}
+function toggleMute(){muteOn=!muteOn;updateCtrl();showToast(muteOn?'🔇 Đã tắt micro':'🎤 Đã bật micro');}
+function updateCtrl(){
+  document.getElementById('btn-spk').className=`ctrlc side${spkOn?' on':''}`;
+  document.getElementById('btn-mute').textContent=muteOn?'🔇':'🎤';
+  document.getElementById('btn-mute').className=`ctrlc side${muteOn?' on':''}`;
+}
+
+// ── FACETIME ───────────────────────────────────
+function doFT(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  // iOS FaceTime deep link
+  window.location.href=`facetime:${c.phone.replace(/-/g,'')}`;
+  ftRecents.unshift({id:c.id,name:c.name,emoji:c.emoji,color:c.color,rel:c.rel,time:Date.now()});
+  if(ftRecents.length>20)ftRecents.pop();
+  save();
+  showToast(`📹 Đang gọi FaceTime cho ${c.name}...`);
+}
+function doFTById(id){const c=contacts.find(x=>x.id===id);if(c)doFT(c.id);}
+function renderFT(){
+  const el=document.getElementById('ft-list');
+  const fmt=ts=>{
+    const d=Date.now()-ts;
+    if(d<60000)return 'Vừa xong';
+    if(d<3600000)return Math.floor(d/60000)+' phút trước';
+    if(d<86400000)return Math.floor(d/3600000)+' giờ trước';
+    return Math.floor(d/86400000)+' ngày trước';
+  };
+  if(!ftRecents.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📹</div><div class="empty-txt">Chưa có cuộc gọi FaceTime<br>Nhấn 📹 trong danh bạ để gọi</div></div>`;
+    return;
+  }
+  el.innerHTML=ftRecents.map(r=>`
+    <div class="ftitem" onclick="doFTById(${r.id})">
+      <div class="ftav" style="background:${r.color}22">${r.emoji}</div>
+      <div class="ftinfo">
+        <div class="ftname">${r.name}</div>
+        <div class="ftmeta">📹 FaceTime · ${fmt(r.time)}</div>
+      </div>
+      <button class="ftbtn">📹 Gọi lại</button>
+    </div>`).join('');
+}
+
+// ── INCOMING ───────────────────────────────────
+function simIncoming(){
+  const c=contacts[Math.floor(Math.random()*contacts.length)];
+  document.getElementById('inc-face').textContent=c.emoji;
+  document.getElementById('inc-face').style.background=c.color+'22';
+  document.getElementById('inc-name').textContent=c.name;
+  document.getElementById('inc-sub').textContent=c.rel+' · '+c.phone;
+  document.getElementById('inc-ov').classList.add('show');
+  logRecent(c,'in');
+}
+function acceptCall(){
+  const emoji=document.getElementById('inc-face').textContent;
+  const bg=document.getElementById('inc-face').style.background;
+  const name=document.getElementById('inc-name').textContent;
+  document.getElementById('inc-ov').classList.remove('show');
+  openCallOv({emoji,color:'#3A7D44',name,rel:''});
+}
+function rejectCall(){
+  document.getElementById('inc-ov').classList.remove('show');
+  showToast('Đã từ chối cuộc gọi');
+}
+
+// ── RECENTS ────────────────────────────────────
+function logRecent(c,dir){
+  recents.unshift({id:c.id,name:c.name,emoji:c.emoji,color:c.color||'#3A7D44',rel:c.rel,dir,time:Date.now()});
+  if(recents.length>40)recents.pop();save();
+}
+function renderRecent(){
+  const el=document.getElementById('rlist');
+  const fmt=ts=>{
+    const d=Date.now()-ts;
+    if(d<60000)return 'Vừa xong';
+    if(d<3600000)return Math.floor(d/60000)+' phút trước';
+    if(d<86400000)return Math.floor(d/3600000)+' giờ trước';
+    return Math.floor(d/86400000)+' ngày trước';
+  };
+  if(!recents.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">Chưa có cuộc gọi nào</div></div>
+    <button class="demo-btn" onclick="simIncoming()">📲 Thử nhận cuộc gọi</button>`;
+    return;
+  }
+  el.innerHTML=recents.map(r=>`
+    <div class="ritem">
+      <div class="rav" style="background:${r.color}22">${r.emoji}</div>
+      <div class="rinfo">
+        <div class="rname">${r.name}</div>
+        <div class="rmeta">${r.dir==='out'?'📞 Gọi đi':'📲 Gọi đến'} · ${r.rel} · ${fmt(r.time)}</div>
+      </div>
+      <button class="rbtn" onclick="callById(${r.id})">📞</button>
+    </div>`).join('')+
+    `<button class="demo-btn" onclick="simIncoming()">📲 Thử nhận cuộc gọi</button>`;
+}
+function callById(id){const c=contacts.find(x=>x.id===id);if(c)doCall(c.id);}
+
+// ── DIALPAD ────────────────────────────────────
+const PAD=[['1',''],['2','ABC'],['3','DEF'],['4','GHI'],['5','JKL'],['6','MNO'],['7','PQRS'],['8','TUV'],['9','WXYZ'],['*',''],['0','+'],['#','']];
+document.getElementById('pad-grid').innerHTML=PAD.map(([d,l])=>
+  `<button class="pkey" onclick="dialPress('${d}')"><span class="pd">${d}</span><span class="pl">${l}</span></button>`).join('');
+function dialPress(d){
+  dialStr+=d;
+  const el=document.getElementById('dial-disp');
+  el.textContent=dialStr;el.classList.remove('ph');
+}
+function dialDel(){
+  dialStr=dialStr.slice(0,-1);
+  const el=document.getElementById('dial-disp');
+  if(dialStr){el.textContent=dialStr;el.classList.remove('ph');}
+  else{el.textContent='Nhập số điện thoại...';el.classList.add('ph');}
+}
+function callFromDial(){
+  if(!dialStr){showToast('Vui lòng nhập số điện thoại');return;}
+  window.location.href=`tel:${dialStr}`;
+  openCallOv({emoji:'📞',color:'#3A7D44',name:dialStr,rel:'Nhập trực tiếp'});
+}
+
+// ── ADD CONTACT ────────────────────────────────
+function initForms(){
+  // add
+  document.getElementById('epick').innerHTML=EMOJIS.map((e,i)=>
+    `<div class="ep${i===0?' on':''}" onclick="pickE(this,'${e}')">${e}</div>`).join('');
+  document.getElementById('cpick').innerHTML=COLORS.map((c,i)=>
+    `<div class="cp${i===0?' on':''}" style="background:${c}" onclick="pickC(this,'${c}')"></div>`).join('');
+  // edit
+  document.getElementById('edit-epick').innerHTML=EMOJIS.map((e,i)=>
+    `<div class="ep" onclick="pickEditE(this,'${e}')">${e}</div>`).join('');
+  document.getElementById('edit-cpick').innerHTML=COLORS.map((c,i)=>
+    `<div class="cp" style="background:${c}" onclick="pickEditC(this,'${c}')"></div>`).join('');
+}
+function pickE(el,e){document.querySelectorAll('#epick .ep').forEach(x=>x.classList.remove('on'));el.classList.add('on');selE=e;}
+function pickC(el,c){document.querySelectorAll('#cpick .cp').forEach(x=>x.classList.remove('on'));el.classList.add('on');selC=c;}
+function setFav(v){
+  isFav=v;
+  document.getElementById('fp-yes').className=`fp${v?' on':''}`;
+  document.getElementById('fp-no').className=`fp${!v?' on':''}`;
+}
+function saveContact(){
+  const name=document.getElementById('inp-name').value.trim();
+  const phone=document.getElementById('inp-phone').value.trim();
+  const rel=document.getElementById('inp-rel').value.trim();
+  if(!name){showToast('⚠️ Vui lòng nhập tên');return;}
+  if(!phone){showToast('⚠️ Vui lòng nhập số điện thoại');return;}
+  contacts.push({id:nextId++,name,phone,rel:rel||name,emoji:selE,color:selC,fav:isFav});
+  save();renderContacts();
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-phone').value='';
+  document.getElementById('inp-rel').value='';
+  showToast('✅ Đã lưu danh bạ!');
+  goScreen('home',document.getElementById('nav-home'));
+}
+
+// ── EDIT CONTACT ───────────────────────────────
+function openEdit(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  document.getElementById('edit-id').value=id;
+  document.getElementById('edit-name').value=c.name;
+  document.getElementById('edit-phone').value=c.phone;
+  document.getElementById('edit-rel').value=c.rel;
+  editE=c.emoji;editC=c.color;editFav=c.fav;
+  // emoji
+  document.querySelectorAll('#edit-epick .ep').forEach(el=>{
+    el.classList.toggle('on',el.textContent===c.emoji);
+  });
+  // color
+  document.querySelectorAll('#edit-cpick .cp').forEach(el=>{
+    el.classList.toggle('on',el.style.background===c.color||rgbToHex(el.style.background)===c.color);
+  });
+  // fav
+  setEditFav(c.fav);
+  document.getElementById('edit-modal').classList.add('show');
+}
+function closeEdit(){document.getElementById('edit-modal').classList.remove('show');}
+function pickEditE(el,e){document.querySelectorAll('#edit-epick .ep').forEach(x=>x.classList.remove('on'));el.classList.add('on');editE=e;}
+function pickEditC(el,c){document.querySelectorAll('#edit-cpick .cp').forEach(x=>x.classList.remove('on'));el.classList.add('on');editC=c;}
+function setEditFav(v){
+  editFav=v;
+  document.getElementById('efp-yes').className=`fp${v?' on':''}`;
+  document.getElementById('efp-no').className=`fp${!v?' on':''}`;
+}
+function saveEdit(){
+  const id=parseInt(document.getElementById('edit-id').value);
+  const idx=contacts.findIndex(x=>x.id===id);if(idx<0)return;
+  const name=document.getElementById('edit-name').value.trim();
+  const phone=document.getElementById('edit-phone').value.trim();
+  const rel=document.getElementById('edit-rel').value.trim();
+  if(!name){showToast('⚠️ Vui lòng nhập tên');return;}
+  if(!phone){showToast('⚠️ Vui lòng nhập số điện thoại');return;}
+  contacts[idx]={...contacts[idx],name,phone,rel:rel||name,emoji:editE,color:editC,fav:editFav};
+  save();renderContacts();closeEdit();
+  showToast('✅ Đã cập nhật!');
+}
+function deleteContact(){
+  const id=parseInt(document.getElementById('edit-id').value);
+  if(!confirm('Bạn có muốn xóa danh bạ này không?'))return;
+  contacts=contacts.filter(x=>x.id!==id);
+  save();renderContacts();closeEdit();
+  showToast('🗑️ Đã xóa');
+}
+
+// util: rgb to hex for color matching
+function rgbToHex(rgb){
+  const m=rgb.match(/\d+/g);if(!m||m.length<3)return '';
+  return '#'+m.slice(0,3).map(x=>Number(x).toString(16).padStart(2,'0')).join('');
+}
+
+// ── TOAST ──────────────────────────────────────
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ── INIT ───────────────────────────────────────
+initForms();
+renderContacts();
+
+// Close modal on bg click
+document.getElementById('edit-modal').addEventListener('click',function(e){
+  if(e.target===this)closeEdit();
+});
+</script>
+</body>
+</html>
